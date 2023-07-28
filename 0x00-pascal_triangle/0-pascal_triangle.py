@@ -4,12 +4,14 @@
 Contains the pascal_triangle function
 """
 
+
 def pascal_triangle(n):
-    """Returns a list of lists of integers representing the Pascal’s triangle of n"""
+    """Returns a list of lists of integers representing
+    the Pascal’s triangle of n"""
     if n <= 0:
         return []
 
-    degree= []
+    degree = []
     pascal_tri = []
 
     for i in range(n):
@@ -18,18 +20,15 @@ def pascal_triangle(n):
         elif (i + 1) == 2:
             pascal_tri.append([1, 1])
         else:
-            for co_eff in range(len(pascal_tri[i - 1])):
-                if co_eff == 0:
+            for c in range(len(pascal_tri[i - 1])):
+                if c == 0:
                     degree.append(1)
                 else:
-                    degree.append((pascal_tri[i - 1][co_eff]) + (pascal_tri[i - 1][co_eff - 1]))
+                    degree.append((pascal_tri[i-1][c])+(pascal_tri[i-1][c-1]))
             degree.append(1)
             pascal_tri.append(degree)
-            #print("degree = ", degree)
+            # print("degree = ", degree)
             degree = []
-        #print("pascal_tri = ", pascal_tri)
-    
+        # print("pascal_tri = ", pascal_tri)
+
     return pascal_tri
-        
-
-
