@@ -14,6 +14,7 @@ def key_interrupt():
 def metric_compute():
     """Compute metrics"""
     mid_str = "GET /projects/260 HTTP/1.1"
+    lines = 1
     try:
         for line in sys.stdin:
             input_str = line.strip()
@@ -33,6 +34,10 @@ def metric_compute():
             if line != right_str:
                 continue
             print("{}: {}".format(details[4]))
+            lines += 1
+            if lines == 10:
+                print("Total size: {}".format(int(details[5])))
+                lines = 1
     except KeyboardInterrupt:
             print("Total size: {}".format(int(details[5])))
 
