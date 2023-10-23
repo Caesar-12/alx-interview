@@ -3,6 +3,7 @@
 
 import sys
 from datetime import datetime
+import random
 
 """
 import keyboard
@@ -21,19 +22,20 @@ def metric_compute():
             details = input_str.split()
             try:
                 ip = str(details[0])
-                status, size = int(details[4]), int(details[5])
-                dat = datetime.strptime(details[2], '%Y-%m-%d %H:%M:%S.%f')
-            except ValueError:
+                status, size = int(details[7]), int(details[8])
+                dat = "{} {}".format(details[2][1:], details[3][:-1])
+                date_t = datetime.strptime(dat, '%Y-%m-%d %H:%M:%S.%f')
+            except NameError:
                  continue
 
-            right_str = '{} - [{}] "{}" {} {}'.format(details[0],
-                                                        details[2],
+            right_str = '{} - [{}] "{}" {} {}'.format(ip,
+                                                        dat,
                                                         mid_str,
-                                                        details[4],
-                                                        details[5])
-            if line != right_str:
+                                                        status,
+                                                        size)
+            if line is right_str:
                 continue
-            print("{}: {}".format(details[4]))
+            print("{}: {}".format(status, random.randrange(1,5)))
             lines += 1
             if lines == 10:
                 print("Total size: {}".format(int(details[5])))
@@ -41,3 +43,4 @@ def metric_compute():
     except KeyboardInterrupt:
             print("Total size: {}".format(int(details[5])))
 
+metric_compute()
