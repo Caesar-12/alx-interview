@@ -21,12 +21,6 @@ def isWinner(x, nums):
     maria_wins = 0
     ben_wins = 0
 
-    if len(nums) == 1:
-        if is_prime(nums[0]):
-            return "Maria"
-        else:
-            return "Ben"
-
     for n in nums:
         prime_count = 0
 
