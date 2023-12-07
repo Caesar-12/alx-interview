@@ -23,17 +23,19 @@ def isWinner(x, nums):
 
     for n in nums:
         prime_count = 0
-
         n_range = [x for x in range(1, n + 1)]
+
         for i in n_range:
             if is_prime(i):
                 prime_count += 1
+
         if prime_count == 0:
             ben_wins += 1
         elif prime_count % 2 == 0:
             ben_wins += 1
         else:
             maria_wins += 1
+        print("Maria win: {}\tBen win: {}".format(maria_wins, ben_wins))
 
     if maria_wins > ben_wins:
         return "Maria"
