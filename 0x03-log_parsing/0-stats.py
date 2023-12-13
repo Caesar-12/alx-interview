@@ -1,57 +1,46 @@
 #!/usr/bin/python3
-"""Log parsing"""
-
+"""Script that reads from stdin and compute metrics"""
 
 import sys
-import re
+from datetime import datetime
+import random
 
-if __name__ == '__main__':
-    total = 0
-    counts = {}
+"""
+import keyboard
 
-    log_pattern = (
-        r'(?P<ip>\d+\.\d+\.\d+\.\d+) - \[(?P<date>.*?)\] '
-        r'"GET /projects/260 HTTP/1\.1" (?P<status>\d+) (?P<size>\d+)'
-    )
-    log_regex = re.compile(log_pattern)
+def key_interrupt():
+    keyboard.wait('ctrl' + 'c')
+"""
 
-    def print_statistics():
-        """
-        print these statistics
-        """
-        print("File size:", total)
-        for status_code, c in sorted(counts.items()):
-            print(f"{status_code}: {c}")
-
+def metric_compute():
+    """Compute metrics"""
+    mid_str = "GET /projects/260 HTTP/1.1"
+    lines = 1
     try:
-        line_count = 0
         for line in sys.stdin:
-            # Skip lines that don't match the input format
-            match = log_regex.match(line.strip())
-            if not match:
+            input_str = line.strip()
+            details = input_str.split()
+            try:
+                ip = str(details[0])
+                status, size = int(details[7]), int(details[8])
+                dat = "{} {}".format(details[2][1:], details[3][:-1])
+                date_t = datetime.strptime(dat, '%Y-%m-%d %H:%M:%S.%f')
+            except NameError:
+                 continue
+
+            right_str = '{} - [{}] "{}" {} {}'.format(ip,
+                                                        dat,
+                                                        mid_str,
+                                                        status,
+                                                        size)
+            if line is right_str:
                 continue
-            """Extract information from the log line"""
-            groups = match.groups()
-            if len(groups) != 4:
-                continue
-            _, _, status_code, file_size = groups
-
-            # Update total file size
-            total += int(file_size)
-
-            # Update status code counts
-            if status_code.isdigit():
-                counts[int(status_code)] = counts.get(int(status_code), 0) + 1
-
-            line_count += 1
-
-            # Print statistics every 10 lines
-            if line_count % 10 == 0:
-                print_statistics()
-
+            print("{}: {}".format(status, random.randrange(1,5)))
+            lines += 1
+            if lines == 10:
+                print("Total size: {}".format(int(details[5])))
+                lines = 1
     except KeyboardInterrupt:
-        """
-        If a keyboard interruption occurs (CTRL + C),
-        print the final statistics
-        """
-        print_statistics()
+            print("Total size: {}".format(int(details[5])))
+
+metric_compute()
