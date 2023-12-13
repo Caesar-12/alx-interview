@@ -1,36 +1,17 @@
+#!/usr/bin/python3
+import random
 import sys
+from time import sleep
+import datetime
 
-def process_line(line, metrics):
-    try:
-        parts = line.split()
-        ip, date, status, size = parts[0], parts[3][1:], int(parts[8]), int(parts[9])
-        metrics['total_size'] += size
-        metrics['status_counts'][status] = metrics['status_counts'].get(status, 0) + 1
-    except (IndexError, ValueError):
-        pass
+for i in range(10000):
+    sleep(random.random())
+    sys.stdout.write("{:d}.{:d}.{:d}.{:d} - [{}] \"GET /projects/260 HTTP/1.1\" {} {}\n".format(
+        random.randint(1, 255), random.randint(
+            1, 255), random.randint(1, 255), random.randint(1, 255),
+        datetime.datetime.now(),
+        random.choice([200, 301, 400, 401, 403, 404, 405, 500]),
+        random.randint(1, 1024)
+    ))
+    sys.stdout.flush()
 
-def print_statistics(metrics):
-    print(f"Total file size: {metrics['total_size']}")
-
-    for status_code in sorted(metrics['status_counts']):
-        print(f"{status_code}: {metrics['status_counts'][status_code]}")
-
-def main():
-    metrics = {'total_size': 0, 'status_counts': {}}
-    lines_processed = 0
-
-    try:
-        for line in sys.stdin:
-            process_line(line.strip(), metrics)
-            lines_processed += 1
-
-            if lines_processed % 10 == 0:
-                print_statistics(metrics)
-                metrics = {'total_size': 0, 'status_counts': {}}
-
-    except KeyboardInterrupt:
-        print_statistics(metrics)
-        sys.exit(0)
-
-if __name__ == "__main__":
-    main()
